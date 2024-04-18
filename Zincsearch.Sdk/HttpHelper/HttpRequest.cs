@@ -1,64 +1,26 @@
-﻿using Newtonsoft.Json;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
-using Zincsearch.Sdk.Common;
 
 namespace Zincsearch.Sdk.HttpHelper;
 
 public static class HttpRequest
 {
-    public static async Task<T?> RequestAsync<T>(HttpRequestModel httpRequestInfo)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="httpRequestInfo"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public static async Task<HttpResponseMessage> RequestAsync<T>(HttpRequestModel httpRequestInfo)
     {
         HttpResponseMessage response = await RequestAsync(httpRequestInfo);
-        if (!response.IsSuccessStatusCode)
+        if (response == null)
         {
-            throw new HttpRequestException("Http请求失败-" + JsonConvert.SerializeObject(response));
+            throw new Exception("Failed to get the result of the HTTP request");
         }
-
-        try
-        {
-            Type resType = typeof(T);
-            object resData2 = null;
-            if (resType == typeof(string))
-            {
-                resData2 = await response.Content.ReadAsStringAsync();
-            }
-            else if (resType == typeof(Stream))
-            {
-                resData2 = await response.Content.ReadAsStreamAsync();
-            }
-            else if (resType == typeof(byte[]))
-            {
-                resData2 = await response.Content.ReadAsByteArrayAsync();
-            }
-            else
-            {
-                string responseContentType = httpRequestInfo.ResponseContentType;
-                if (1 == 0)
-                {
-                }
-
-                object obj = responseContentType switch
-                {
-                    "application/json" => JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync()),
-                    "text/xml" => (await response.Content.ReadAsStringAsync()).DeserializationXml<T>(),
-                    "application/xml" => (await response.Content.ReadAsStringAsync()).DeserializationXml<T>(),
-                    _ => resData2,
-                };
-                if (1 == 0)
-                {
-                }
-
-                resData2 = obj;
-            }
-
-            return resData2.ChangeType<T>();
-        }
-        catch
-        {
-            throw new Exception("获取Http请求结果失败");
-        }
+        return response;
     }
 
     public static async Task<HttpResponseMessage> RequestAsync(HttpRequestModel httpRequestInfo)
@@ -78,7 +40,6 @@ public static class HttpRequest
                 httpRequestMessage.Headers.Add(key, httpRequestInfo.Heads[key]);
             }
         }
-
         httpRequestMessage.Content = httpRequestInfo.HttpContent;
         if (!string.IsNullOrEmpty(httpRequestInfo.RequestContentType))
         {
@@ -87,12 +48,10 @@ public static class HttpRequest
                 CharSet = httpRequestInfo.Encoding.WebName
             };
         }
-
         if (!string.IsNullOrEmpty(httpRequestInfo.ResponseContentType))
         {
             httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(httpRequestInfo.ResponseContentType));
         }
-
         return await client.SendAsync(httpRequestMessage);
     }
 

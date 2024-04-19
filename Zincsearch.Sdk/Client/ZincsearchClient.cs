@@ -5,6 +5,7 @@ using System.Text;
 using Zincsearch.Sdk.Config;
 using Zincsearch.Sdk.HttpHelper;
 using Zincsearch.Sdk.Model;
+using Zincsearch.Sdk.RequestModel;
 using Zincsearch.Sdk.ResultModel;
 using Zincsearch.Sdk.ZincsearchRequestPath;
 
@@ -29,38 +30,52 @@ public class ZincsearchClient : IZincsearchClient
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <param name="Index"></param>
-    /// <param name="DocumentContent"></param>
+    /// <param name="Index">索引名</param>
+    /// <param name="DocumentContent">文档</param>
     /// <returns></returns>
-    public async Task<SdkResult<IndexReponse>> IndexAsync<T>(string Index, T DocumentContent)
+    public async Task<SdkResult<IndexReponse>> IndexAsync<T>(IndexRequestModel<T> indexRequestModel)
     {
-
-        var indexName = "";
-        if (string.IsNullOrWhiteSpace(Index))
-            indexName = zincsearchConfig.DefaultIndex;
-
-        var authentication = GetAuthentication();
-        var url = string.Format($"{zincsearchConfig}{RequestPath.Index}", indexName);
-
-        var requestModel = new HttpRequestModel()
+        try
         {
-            Url = url,
-            HttpMethod = HttpMethod.Post,
-            HttpContent = new StringContent(JsonConvert.SerializeObject(DocumentContent),
-            Encoding.UTF8,
-            "application/json"),
-            RequestContentType = "application/json",
-            Heads = new Dictionary<string, string>()
+            var indexName = "";
+            if (string.IsNullOrWhiteSpace(indexRequestModel.IndexName))
+                indexName = zincsearchConfig.DefaultIndex;
+
+            else
+                indexName = indexRequestModel.IndexName;
+
+            var authentication = GetAuthentication();
+            var url = string.Format($"{zincsearchConfig.ZincsearchUrl}{RequestPath.Index}", indexName);
+
+            var requestModel = new HttpRequestModel()
+            {
+                Url = url,
+                HttpMethod = HttpMethod.Post,
+                HttpContent = new StringContent(JsonConvert.SerializeObject(indexRequestModel.Data),
+                Encoding.UTF8,
+                "application/json"),
+                RequestContentType = "application/json",
+                Heads = new Dictionary<string, string>()
             {
                {"Authorization",$"Basic {authentication}" }
             }
-        };
-        var response = await HttpRequest.RequestAsync<string>(requestModel);
-        if (response.StatusCode== HttpStatusCode.Unauthorized)
-        {
+            };
+            var response = await HttpRequest.RequestAsync<string>(requestModel);
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return SdkResult.Fail<IndexReponse>("Unauthorized");
+            }
+            if (response.StatusCode == HttpStatusCode.InternalServerError)
+            {
+                return SdkResult.Fail<IndexReponse>("InternalServerError");
+            }
+            var _resultData = JsonConvert.DeserializeObject<IndexReponse>(await response.Content.ReadAsStringAsync());
+            return SdkResult.Ok(_resultData);
         }
-        var _resultData = JsonConvert.DeserializeObject<IndexReponse>(await response.Content.ReadAsStringAsync());
-        return SdkResult.Ok(_resultData);
+        catch (Exception ex)
+        {
+            return SdkResult.Fail<IndexReponse>(ex.Message.ToString());
+        }
     }
     /// <summary>
     /// 

@@ -30,4 +30,7 @@ public class SysLog
     public int Id { get; set; } = 1;
 
     public string Name { get; set; } = "1111";
+
+
+    public DateTime DateTime { get; set; } = DateTime.Now;
 }

@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zincsearch.Sdk", "Zincsearch.Sdk\Zincsearch.Sdk.csproj", "{E5CC9896-ADD2-48CB-B560-842A5B4F829B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zincsearch.Sdk", "Zincsearch.Sdk\Zincsearch.Sdk.csproj", "{E5CC9896-ADD2-48CB-B560-842A5B4F829B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zincsearch.Sdk.Test", "Zincsearch.Sdk.Test\Zincsearch.Sdk.Test.csproj", "{E4A35879-4A0C-4390-B91D-4EA8D8674458}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zincsearch.Sdk.Test", "Zincsearch.Sdk.Test\Zincsearch.Sdk.Test.csproj", "{E4A35879-4A0C-4390-B91D-4EA8D8674458}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAPI", "TestAPI\TestAPI.csproj", "{3B7D3CBB-9C81-4BFB-A8B7-A4C3D92F3CC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{E4A35879-4A0C-4390-B91D-4EA8D8674458}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4A35879-4A0C-4390-B91D-4EA8D8674458}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4A35879-4A0C-4390-B91D-4EA8D8674458}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B7D3CBB-9C81-4BFB-A8B7-A4C3D92F3CC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B7D3CBB-9C81-4BFB-A8B7-A4C3D92F3CC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B7D3CBB-9C81-4BFB-A8B7-A4C3D92F3CC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B7D3CBB-9C81-4BFB-A8B7-A4C3D92F3CC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,1 +1,1 @@
-# Zincsearch.Sdk
+ Zincsearch dotnet sdk 
